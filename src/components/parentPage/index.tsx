@@ -7,11 +7,15 @@ import { useQueryParam } from "@hooks/useQueryParam";
 import clsx from "clsx";
 
 const PermataSimulator: React.FC = () => {
-  const [tabParam, setTabParam] = useQueryParam('tab', ContentType.Inquiry);
-  
+  const [tabParam, setTabParam] = useQueryParam("tab", ContentType.Inquiry);
+
   const getValidTab = (param: string): ContentType => {
-    const validTabs = [ContentType.Inquiry, ContentType.Payment, ContentType.Reversal];
-    return validTabs.find(tab => tab === param) || ContentType.Inquiry;
+    const validTabs = [
+      ContentType.Inquiry,
+      ContentType.Payment,
+      ContentType.Reversal,
+    ];
+    return validTabs.find((tab) => tab === param) || ContentType.Inquiry;
   };
 
   const activeTab = getValidTab(tabParam);
@@ -52,7 +56,16 @@ const PermataSimulator: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white">
       <h1 className="text-2xl font-semibold text-gray-800 mb-8">
-        Permata Simulator
+        Doku Permata Simulator{" "}
+        <span className="text-sm text-gray-500/80 underline">
+          <a
+            href="https://github.com/fanesz/doku-simulator"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            by Fanesz
+          </a>
+        </span>
       </h1>
 
       {/* Endpoint Selector */}
