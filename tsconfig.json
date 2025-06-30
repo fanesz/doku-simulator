@@ -29,7 +29,8 @@
       "@components/*": ["./src/components/*"],
       "@assets/*": ["./src/assets/*"],
       "@services/*": ["./src/api/services/*"],
-      "@states/*": ["./src/states/*"]
+      "@states/*": ["./src/states/*"],
+      "@config/*": ["./src/config/*"]
     }
   },
   "include": ["src"],

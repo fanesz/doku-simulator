@@ -4,6 +4,7 @@ import PermataService from "@services/permata/service";
 import usePaymentStore from "@states/payment/store";
 import { PermataPaymentRequest } from "@services/permata/interfaces";
 import moment from "moment";
+import { generatePaymentWords } from "@utils/generateWords";
 
 interface UsePaymentReturn {
   formData: PaymentFormData;
@@ -44,19 +45,23 @@ const usePayment = (): UsePaymentReturn => {
 
     setResult(null);
 
+    const wordsPayload = {
+      AMOUNT: formData.amount || "0",
+      TRANSIDMERCHANT: "mkJl6FWKOGI1",
+      RESULTMSG: "SUCCESS",
+      VERIFYSTATUS: "NA",
+    }
+
     const payload: PermataPaymentRequest = {
-      PAYMENTDATETIME: moment(formData.date).format("YYYYMMDDHHmmss"),
+      PAYMENTDATETIME: formData.date ? formData.date : moment().format("YYYYMMDDHHmmss"),
       PURCHASECURRENCY: formData.currency || "360",
       LIABILITY: "",
       PAYMENTCHANNEL: formData.channelCode || "36",
-      AMOUNT: formData.amount || "0",
       PAYMENTCODE: formData.virtualAccountNumber,
       MCN: formData.virtualAccountNumber,
-      WORDS: "542da90edc6752a4a9f2ac570d38c49314a95b88",
-      RESULTMSG: "SUCCESS",
+      WORDS: generatePaymentWords(wordsPayload),
       VERIFYID: "",
-      TRANSIDMERCHANT: "mkJl6FWKOGI1",
-      BANK: "PERMATA",
+      BANK: "Permata",
       STATUSTYPE: "P",
       APPROVALCODE: "123123",
       EDUSTATUS: "NA",
@@ -64,8 +69,8 @@ const usePayment = (): UsePaymentReturn => {
       VERIFYSCORE: "-1",
       CURRENCY: formData.currency || "360",
       RESPONSECODE: "0000",
-      VERIFYSTATUS: "NA",
       SESSIONID: "tIzk3szs0wb02aVvCR52",
+      ...wordsPayload,
     };
     permataService.payment(value, payload).then((res) => {
       usePaymentStore.getState().setResult(res);

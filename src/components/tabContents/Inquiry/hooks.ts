@@ -3,6 +3,7 @@ import useEndpointStore from "@states/selectedEndpoint/store";
 import { PermataInquiryRequest } from "@services/permata/interfaces/inquiry";
 import useInquiryStore from "@states/inquiry/store";
 import { InquiryFormData } from "@states/inquiry/interface";
+import { generateInquiryWords } from "@utils/generateWords";
 
 interface UseInquiryReturn {
   formData: InquiryFormData;
@@ -49,7 +50,7 @@ const useInquiry = (): UseInquiryReturn => {
       PAYMENTCHANNEL: "36",
       PAYMENTCODE: formData.virtualAccountNumber,
       STATUSTYPE: "I",
-      WORDS: "b25872a8920615d4f723f28a402bdc6b387b8e94",
+      WORDS: generateInquiryWords(formData.virtualAccountNumber),
       OCOID: "3006250103327442336",
     };
     permataService.inquiry(value, payload).then((res) => {
