@@ -16,8 +16,13 @@ interface UsePaymentReturn {
 const usePayment = (): UsePaymentReturn => {
   const { value } = useEndpointStore();
   const permataService = new PermataService();
-  const { formData, handleInput, clearFormData, handlePaste } =
-    usePaymentStore();
+  const {
+    formData,
+    handleInput,
+    clearFormData,
+    handlePaste,
+    setResult,
+  } = usePaymentStore();
 
   const handleInputChange = (field: keyof PaymentFormData, value: string) => {
     handleInput(field, value);
@@ -36,6 +41,8 @@ const usePayment = (): UsePaymentReturn => {
       console.log("Virtual Account Number is required");
       return;
     }
+
+    setResult(null);
 
     const payload: PermataPaymentRequest = {
       PAYMENTDATETIME: moment(formData.date).format("YYYYMMDDHHmmss"),

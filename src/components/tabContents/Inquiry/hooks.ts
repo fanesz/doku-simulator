@@ -15,8 +15,13 @@ interface UseInquiryReturn {
 const useInquiry = (): UseInquiryReturn => {
   const { value } = useEndpointStore();
   const permataService = new PermataService();
-  const { formData, handleInput, clearFormData, handlePaste } =
-    useInquiryStore();
+  const {
+    formData,
+    handleInput,
+    clearFormData,
+    handlePaste,
+    setResult,
+  } = useInquiryStore();
 
   const handleInputChange = (field: keyof InquiryFormData, value: string) => {
     handleInput(field, value);
@@ -36,7 +41,8 @@ const useInquiry = (): UseInquiryReturn => {
       return;
     }
 
-    // mostly hardcoded values, but you can modify as needed
+    setResult(null);
+
     const payload: PermataInquiryRequest = {
       MALLID: "8918",
       CHAINMERCHANT: "0",

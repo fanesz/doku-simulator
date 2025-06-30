@@ -13,5 +13,5 @@ export interface InquiryStore {
   clearFormData: () => void;
   handlePaste: (field: keyof InquiryFormData) => Promise<void>;
   result: AxiosResponse | null;
-  setResult: (result: AxiosResponse) => void;
+  setResult: (result: AxiosResponse | null) => void;
 }

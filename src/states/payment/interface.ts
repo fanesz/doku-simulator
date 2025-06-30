@@ -16,5 +16,5 @@ export interface PaymentStore {
   clearFormData: () => void;
   handlePaste: (field: keyof PaymentFormData) => Promise<void>;
   result: AxiosResponse | null;
-  setResult: (result: AxiosResponse) => void;
+  setResult: (result: AxiosResponse | null) => void;
 }
