@@ -19,14 +19,12 @@ const useInquiryStore = create<InquiryStore>()((set) => ({
     set(() => ({ result: null }));
   },
 
-  handlePaste: async (field) => {
-    set((state) => ({
-      formData: {
-        ...state.formData,
-        [field]: getClipboard(),
-      },
-    }));
-  },
+  handlePaste: (field) => getClipboard().then((text) => set((state) => ({
+    formData: {
+      ...state.formData,
+      [field]: text,
+    },
+  }))),
 
   result: null,
   setResult: (result) =>
