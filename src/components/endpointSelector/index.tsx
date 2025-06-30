@@ -119,6 +119,10 @@ const EndpointSelector: React.FC<EndpointSelectorProps> = (props) => {
           </div>
         </div>
       )}
+
+      <label className="block text-xs font-medium text-gray-700 mt-1">
+        Note: by add /* at the end of url, will auto add /notify or /inquiry, if not, will execute the inputed url
+      </label>
     </div>
   );
 };
