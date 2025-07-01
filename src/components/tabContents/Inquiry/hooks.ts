@@ -38,7 +38,7 @@ const useInquiry = (): UseInquiryReturn => {
 
   const handleSubmit = () => {
     if (!formData.virtualAccountNumber) {
-      console.log("Virtual Account Number is required");
+      alert("Virtual Account Number is required");
       return;
     }
 

@@ -39,7 +39,11 @@ const usePayment = (): UsePaymentReturn => {
 
   const handleSubmit = () => {
     if (!formData.virtualAccountNumber) {
-      console.log("Virtual Account Number is required");
+      alert("Virtual Account Number is required");
+      return;
+    }
+    if (!formData.transactionId) {
+      alert("Transaction ID is required");
       return;
     }
 
