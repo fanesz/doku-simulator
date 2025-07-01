@@ -8,4 +8,5 @@ export const paymentDefaultValue: PaymentFormData = {
   amount: "",
   currency: "",
   channelCode: "",
+  transactionId: "",
 }

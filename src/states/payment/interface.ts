@@ -8,6 +8,7 @@ export interface PaymentFormData {
   amount: string;
   currency: string;
   channelCode: string;
+  transactionId: string;
 }
 
 export interface PaymentStore {

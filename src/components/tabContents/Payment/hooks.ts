@@ -47,7 +47,7 @@ const usePayment = (): UsePaymentReturn => {
 
     const wordsPayload = {
       AMOUNT: formData.amount || "0",
-      TRANSIDMERCHANT: "mkJl6FWKOGI1",
+      TRANSIDMERCHANT: formData.transactionId,
       RESULTMSG: "SUCCESS",
       VERIFYSTATUS: "NA",
     }

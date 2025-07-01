@@ -36,5 +36,10 @@ export const inputFields = [
     label: "CHANNEL CODE",
     placeholder: "2 Digit (optional, default: 36)",
   },
+  {
+    key: "transactionId" as keyof PaymentFormData,
+    label: "TRANSACTION ID*",
+    placeholder: "Get it from Inquiry result",
+  },
 ];
 
