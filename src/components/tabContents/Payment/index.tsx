@@ -1,4 +1,4 @@
-import ActionButton from "@commonComponents/Button";
+import ActionButton from "@commonComponents/ActionButton";
 import InputField from "@commonComponents/Input";
 import { inputFields } from "./utils";
 import usePayment from "./hooks";
