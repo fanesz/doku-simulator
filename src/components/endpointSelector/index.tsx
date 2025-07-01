@@ -1,7 +1,5 @@
-import { useState, useRef, useEffect } from "react";
-import { endpointSuggestions } from "./utils";
 import clsx from "clsx";
-import useEndpointStore from "@states/selectedEndpoint/store";
+import useEndpointSelector from "./hooks";
 
 interface EndpointSelectorProps {
   className?: string;
@@ -10,75 +8,36 @@ interface EndpointSelectorProps {
 const EndpointSelector: React.FC<EndpointSelectorProps> = (props) => {
   const { className = "" } = props;
 
-  const { value, setValue } = useEndpointStore();
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value;
-    setValue(inputValue);
-    setIsOpen(true);
-  };
-
-  const handleSuggestionClick = (suggestion: string) => {
-    setValue(suggestion);
-    setIsOpen(false);
-    inputRef.current?.blur();
-  };
-
-  const handleInputFocus = () => {
-    setIsOpen(true);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Escape") {
-      setIsOpen(false);
-      inputRef.current?.blur();
-    }
-  };
+  const { state, refs, handlers, utils } = useEndpointSelector();
 
   return (
-    <div className={clsx("relative", className)} ref={dropdownRef}>
+    <div className={clsx("relative", className)} ref={refs.dropdown}>
       <label className="block text-sm font-medium text-gray-700 mb-2">
         API Endpoint URL
       </label>
 
       <div className="relative">
         <input
-          ref={inputRef}
+          ref={refs.input}
           type="text"
-          value={value}
-          onChange={handleInputChange}
-          onFocus={handleInputFocus}
-          onKeyDown={handleKeyDown}
-          placeholder="Enter custom endpoint or select from suggestions"
+          value={state.value}
+          onChange={handlers.inputChange}
+          onFocus={handlers.inputFocus}
+          onBlur={handlers.inputBlur}
+          onKeyDown={handlers.keyDown}
+          placeholder="Enter custom endpoint or search suggestions..."
           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
         />
 
         <button
           type="button"
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={handlers.dropdownToggle}
           className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
         >
           <svg
             className={clsx(
               "w-5 h-5 transition-transform",
-              isOpen ? "rotate-180" : ""
+              state.isOpen ? "rotate-180" : ""
             )}
             fill="none"
             stroke="currentColor"
@@ -94,34 +53,59 @@ const EndpointSelector: React.FC<EndpointSelectorProps> = (props) => {
         </button>
       </div>
 
-      {isOpen && endpointSuggestions.length > 0 && (
+      {state.isOpen && state.filteredSuggestions.length > 0 && (
         <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-          {endpointSuggestions.map((suggestion, index) => (
+          {state.filteredSuggestions.map((suggestion, index) => (
             <button
               key={index}
               type="button"
-              onClick={() => handleSuggestionClick(suggestion)}
+              onClick={() => handlers.suggestionClick(suggestion)}
               className={clsx(
                 "w-full px-4 py-3 text-left hover:bg-gray-50 focus:bg-gray-50 focus:outline-none transition-colors border-b border-gray-100 last:border-b-0",
-                value === suggestion ? "bg-gray-100 font-semibold" : "bg-white"
+                state.value === suggestion
+                  ? "bg-gray-100 font-semibold"
+                  : "bg-white"
               )}
             >
-              <span className="text-gray-900">{suggestion}</span>
+              <span className="text-gray-900">
+                {utils.highlightText(suggestion).map((part, partIndex) => {
+                  if (typeof part === "string") {
+                    return part;
+                  } else if (part.highlight) {
+                    return (
+                      <mark
+                        key={partIndex}
+                        className="bg-yellow-200 px-0.5 rounded"
+                      >
+                        {part.text}
+                      </mark>
+                    );
+                  }
+                  return null;
+                })}
+              </span>
             </button>
           ))}
         </div>
       )}
 
-      {isOpen && endpointSuggestions.length === 0 && value && (
-        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
-          <div className="px-4 py-3 text-gray-500 text-sm">
-            No suggestions found
+      {state.isOpen &&
+        state.filteredSuggestions.length === 0 &&
+        state.searchTerm.trim() && (
+          <div
+            className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg"
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="px-4 py-3 text-gray-500 text-sm select-none">
+              No suggestions found for "{state.searchTerm}"
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
       <label className="block text-xs font-medium text-gray-700 mt-1">
-        Note: by add /* at the end of url, will auto add /notify or /inquiry, if not, will execute the inputed url
+        Note: by add /* at the end of url, will auto add /notify or /inquiry, if
+        not, will execute the inputed url
       </label>
     </div>
   );
